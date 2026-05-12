@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { notFound } from "next/navigation";
 import { getProduct, getProducts } from "@/lib/medusa";
 import ProductDetailClient from "@/components/ProductDetailClient";

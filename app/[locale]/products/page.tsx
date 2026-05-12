@@ -4,7 +4,8 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import ProductCard from "@/components/ProductCard";
 import { getProducts } from "@/lib/medusa";
-import { mockProducts } from "@/lib/mockData";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Products",
@@ -18,7 +19,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const { sort = "newest", category = "Alle" } = await searchParams;
   const t = await getTranslations("Products");
 
-  let products = await getProducts({ limit: 100 }).catch(() => [...mockProducts]);
+  let products = await getProducts({ limit: 100 }).catch(() => []);
 
   if (category && category !== "Alle") {
     products = products.filter(
