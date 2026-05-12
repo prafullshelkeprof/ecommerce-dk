@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "**.medusajs.com",
       },
+      {
+        protocol: "https",
+        hostname: "ecommerce-dk-backend-1.onrender.com",
+      },
     ],
   },
   experimental: {

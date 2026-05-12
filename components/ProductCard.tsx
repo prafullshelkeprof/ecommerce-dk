@@ -86,22 +86,24 @@ export default function ProductCard({ product }: ProductCardProps) {
         </h3>
 
         {/* Rating */}
-        <div className="flex items-center gap-1.5">
-          <div className="flex">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star
-                key={i}
-                size={11}
-                className={
-                  i < Math.floor(product.rating)
-                    ? "fill-amber-400 text-amber-400"
-                    : "fill-gray-200 text-gray-200"
-                }
-              />
-            ))}
+        {(product.rating ?? 0) > 0 && (
+          <div className="flex items-center gap-1.5">
+            <div className="flex">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star
+                  key={i}
+                  size={11}
+                  className={
+                    i < Math.floor(product.rating!)
+                      ? "fill-amber-400 text-amber-400"
+                      : "fill-gray-200 text-gray-200"
+                  }
+                />
+              ))}
+            </div>
+            <span className="text-xs text-gray-500">({product.reviewCount})</span>
           </div>
-          <span className="text-xs text-gray-500">({product.reviewCount})</span>
-        </div>
+        )}
 
         <p className="text-sm font-bold text-[#1a1a1a]">{formatPrice(product.price)}</p>
       </div>

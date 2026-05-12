@@ -8,8 +8,8 @@ export interface Product {
   category: string;
   tags: string[];
   inStock: boolean;
-  rating: number;
-  reviewCount: number;
+  rating?: number;
+  reviewCount?: number;
 }
 
 export interface CartItem {

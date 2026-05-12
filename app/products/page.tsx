@@ -37,7 +37,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   } else if (sort === "price-desc") {
     products.sort((a, b) => b.price - a.price);
   } else if (sort === "popular") {
-    products.sort((a, b) => b.reviewCount - a.reviewCount);
+    products.sort((a, b) => (b.reviewCount ?? 0) - (a.reviewCount ?? 0));
   }
 
   return (

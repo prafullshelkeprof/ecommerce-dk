@@ -3,12 +3,15 @@ import { ArrowRight, Truck, RotateCcw, Shield, Leaf } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import HeroSection from "@/components/HeroSection";
 import ProductCard from "@/components/ProductCard";
+import { getProducts } from "@/lib/medusa";
 import { mockProducts } from "@/lib/mockData";
 
-export default function HomePage() {
+export default async function HomePage() {
   const t = useTranslations("Home");
-  const featuredProducts = mockProducts.slice(0, 4);
-  const newArrivals = mockProducts.slice(4, 8);
+
+  const products = await getProducts({ limit: 8 }).catch(() => mockProducts.slice(0, 8));
+  const featuredProducts = products.slice(0, 4);
+  const newArrivals = products.slice(4, 8);
 
   const categories = [
     { label: t("clothing"), emoji: "👔", href: "/products?category=tøj" },

@@ -3,6 +3,7 @@ import { SlidersHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import ProductCard from "@/components/ProductCard";
+import { getProducts } from "@/lib/medusa";
 import { mockProducts } from "@/lib/mockData";
 
 export const metadata: Metadata = {
@@ -17,7 +18,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const { sort = "newest", category = "Alle" } = await searchParams;
   const t = useTranslations("Products");
 
-  let products = [...mockProducts];
+  let products = await getProducts({ limit: 100 }).catch(() => [...mockProducts]);
 
   if (category && category !== "Alle") {
     products = products.filter(
@@ -30,7 +31,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   } else if (sort === "price-desc") {
     products.sort((a, b) => b.price - a.price);
   } else if (sort === "popular") {
-    products.sort((a, b) => b.reviewCount - a.reviewCount);
+    products.sort((a, b) => (b.reviewCount ?? 0) - (a.reviewCount ?? 0));
   }
 
   const sortOptions = [
@@ -99,11 +100,18 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         </div>
 
         {/* Product grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {products.length === 0 ? (
+          <div className="text-center py-20 text-gray-500">
+            <p className="text-lg font-semibold">Ingen produkter fundet</p>
+            <p className="text-sm mt-1">Prøv at ændre dine filtre</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
