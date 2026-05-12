@@ -1,4 +1,4 @@
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { ArrowRight, Truck, RotateCcw, Shield, Leaf } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import HeroSection from "@/components/HeroSection";
@@ -7,7 +7,7 @@ import { getProducts } from "@/lib/medusa";
 import { mockProducts } from "@/lib/mockData";
 
 export default async function HomePage() {
-  const t = useTranslations("Home");
+  const t = await getTranslations("Home");
 
   const products = await getProducts({ limit: 8 }).catch(() => mockProducts.slice(0, 8));
   const featuredProducts = products.slice(0, 4);

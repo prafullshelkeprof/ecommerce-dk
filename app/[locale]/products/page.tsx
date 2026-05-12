@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { SlidersHorizontal } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import ProductCard from "@/components/ProductCard";
 import { getProducts } from "@/lib/medusa";
@@ -16,7 +16,7 @@ interface ProductsPageProps {
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const { sort = "newest", category = "Alle" } = await searchParams;
-  const t = useTranslations("Products");
+  const t = await getTranslations("Products");
 
   let products = await getProducts({ limit: 100 }).catch(() => [...mockProducts]);
 
