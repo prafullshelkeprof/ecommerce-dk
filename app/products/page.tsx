@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { SlidersHorizontal } from "lucide-react";
+import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
-import { mockProducts } from "@/lib/mockData";
+import { getProducts } from "@/lib/medusa";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Alle produkter",
@@ -15,7 +18,9 @@ const sortOptions = [
   { value: "popular", label: "Populæreste" },
 ];
 
-const categories = ["Alle", "Tøj", "Køkken", "Bolig", "Accessories", "Have & Planter"];
+const categoryOptions = [
+  "Alle", "Shirts", "Sweatshirts", "Pants", "Merch",
+];
 
 interface ProductsPageProps {
   searchParams: Promise<{ sort?: string; category?: string }>;
@@ -24,7 +29,7 @@ interface ProductsPageProps {
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const { sort = "newest", category = "Alle" } = await searchParams;
 
-  let products = [...mockProducts];
+  let products = await getProducts({ limit: 100 }).catch(() => []);
 
   if (category && category !== "Alle") {
     products = products.filter(
@@ -58,10 +63,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-8">
           {/* Category filter */}
           <div className="flex items-center gap-2 flex-wrap">
-            {categories.map((cat) => (
-              <a
+            {categoryOptions.map((cat) => (
+              <Link
                 key={cat}
-                href={`/products?category=${cat}&sort=${sort}`}
+                href={`/products?category=${encodeURIComponent(cat)}&sort=${sort}`}
                 className={`text-sm px-4 py-1.5 rounded-full border font-medium transition-colors ${
                   category === cat
                     ? "bg-[#1a1a1a] text-white border-[#1a1a1a]"
@@ -69,7 +74,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                 }`}
               >
                 {cat}
-              </a>
+              </Link>
             ))}
           </div>
 

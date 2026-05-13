@@ -2,7 +2,9 @@ import Link from "next/link";
 import { ArrowRight, Truck, RotateCcw, Shield, Leaf } from "lucide-react";
 import HeroSection from "@/components/HeroSection";
 import ProductCard from "@/components/ProductCard";
-import { mockProducts } from "@/lib/mockData";
+import { getProducts } from "@/lib/medusa";
+
+export const dynamic = "force-dynamic";
 
 const categories = [
   { label: "Tøj", emoji: "👔", href: "/products?category=tøj" },
@@ -35,9 +37,10 @@ const perks = [
   },
 ];
 
-export default function HomePage() {
-  const featuredProducts = mockProducts.slice(0, 4);
-  const newArrivals = mockProducts.slice(4, 8);
+export default async function HomePage() {
+  const products = await getProducts({ limit: 8 }).catch(() => []);
+  const featuredProducts = products.slice(0, 4);
+  const newArrivals = products.slice(4, 8);
 
   return (
     <div>
@@ -65,29 +68,31 @@ export default function HomePage() {
       </section>
 
       {/* Featured products */}
-      <section className="py-16 bg-white">
-        <div className="container-dk">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <p className="text-xs uppercase tracking-[0.25em] text-[#2d8a73] font-semibold mb-1">
-                Udvalgte produkter
-              </p>
-              <h2 className="text-3xl font-bold text-[#1a1a1a]">Bestsellere</h2>
+      {featuredProducts.length > 0 && (
+        <section className="py-16 bg-white">
+          <div className="container-dk">
+            <div className="flex items-end justify-between mb-8">
+              <div>
+                <p className="text-xs uppercase tracking-[0.25em] text-[#2d8a73] font-semibold mb-1">
+                  Udvalgte produkter
+                </p>
+                <h2 className="text-3xl font-bold text-[#1a1a1a]">Bestsellere</h2>
+              </div>
+              <Link
+                href="/products"
+                className="hidden md:flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-[#1a1a1a] transition-colors"
+              >
+                Se alle <ArrowRight size={16} />
+              </Link>
             </div>
-            <Link
-              href="/products"
-              className="hidden md:flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-[#1a1a1a] transition-colors"
-            >
-              Se alle <ArrowRight size={16} />
-            </Link>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+              {featuredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Banner */}
       <section className="py-20 bg-[#1a1a1a] text-white">
@@ -108,29 +113,31 @@ export default function HomePage() {
       </section>
 
       {/* New arrivals */}
-      <section className="py-16 bg-[#faf8f5]">
-        <div className="container-dk">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <p className="text-xs uppercase tracking-[0.25em] text-[#2d8a73] font-semibold mb-1">
-                Ny tilgang
-              </p>
-              <h2 className="text-3xl font-bold text-[#1a1a1a]">Nyheder</h2>
+      {newArrivals.length > 0 && (
+        <section className="py-16 bg-[#faf8f5]">
+          <div className="container-dk">
+            <div className="flex items-end justify-between mb-8">
+              <div>
+                <p className="text-xs uppercase tracking-[0.25em] text-[#2d8a73] font-semibold mb-1">
+                  Ny tilgang
+                </p>
+                <h2 className="text-3xl font-bold text-[#1a1a1a]">Nyheder</h2>
+              </div>
+              <Link
+                href="/products?sort=newest"
+                className="hidden md:flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-[#1a1a1a] transition-colors"
+              >
+                Se alle nyheder <ArrowRight size={16} />
+              </Link>
             </div>
-            <Link
-              href="/products?sort=newest"
-              className="hidden md:flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-[#1a1a1a] transition-colors"
-            >
-              Se alle nyheder <ArrowRight size={16} />
-            </Link>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+              {newArrivals.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-            {newArrivals.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Perks */}
       <section className="py-12 border-t border-gray-100 bg-white">
